@@ -24,6 +24,7 @@
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 
 __attribute__((retain))
+__attribute__((used))
 const uint32_t custom_labels_abi_version = 1;
 
 struct _custom_labels_ls {
@@ -33,6 +34,7 @@ struct _custom_labels_ls {
 };
 
 __attribute__((retain))
+__attribute__((used))
 __thread custom_labels_labelset_t *custom_labels_current_set = NULL;
 
 /* thread_local_data = (tls) { NULL, 0 }; */

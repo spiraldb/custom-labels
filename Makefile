@@ -5,15 +5,17 @@ SRCS = src/customlabels.c
 ARCH := $(shell uname -m)
 
 ifeq ($(ARCH),aarch64)
-    TLS_DIALECT = desc
+    TLS_DIALECT = "-mtls-dialect=desc"
+else ifeq ($(ARCH),arm64)
+    TLS_DIALECT = ""
 else ifeq ($(ARCH),x86_64)
-    TLS_DIALECT = gnu2
+    TLS_DIALECT = "-mtls-dialect=gnu2"
 else
-    $(error only aarch64 and x86-64 are supported)
+    $(error only aarch64, x86-64 and Apple's arm64 are supported)
 endif
 
 $(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) -ftls-model=global-dynamic -mtls-dialect=$(TLS_DIALECT) -fPIC -shared -o $(TARGET) $(SRCS)
+	$(CC) $(CFLAGS) -ftls-model=global-dynamic $(TLS_DIALECT) -fPIC -shared -o $(TARGET) $(SRCS)
 
 clean:
 	rm -f $(TARGET)

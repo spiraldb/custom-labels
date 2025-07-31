@@ -151,9 +151,16 @@ pub mod build {
     /// Emit the instructions required for an
     /// executable to expose custom labels data.
     pub fn emit_build_instructions() {
-        let dlist_path = format!("{}/dlist", std::env::var("OUT_DIR").unwrap());
-        std::fs::write(&dlist_path, include_str!("../dlist")).unwrap();
-        println!("cargo:rustc-link-arg=-Wl,--dynamic-list={}", dlist_path);
+        #[cfg(not(target_os = "macos"))]
+        {
+            let dlist_path = format!("{}/dlist", std::env::var("OUT_DIR").unwrap());
+            std::fs::write(&dlist_path, include_str!("../dlist")).unwrap();
+            println!("cargo:rustc-link-arg=-Wl,--dynamic-list={dlist_path}",);
+        }
+        #[cfg(target_os = "macos")]
+        {
+            println!("cargo:rustc-link-arg=-Wl,-u,_custom_labels_abi_version,-u,_custom_labels_current_set",);
+        }
     }
 }
 
